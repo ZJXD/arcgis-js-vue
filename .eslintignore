@@ -1,0 +1,11 @@
+/build/
+/config/
+/dist/
+/*.js
+/test/unit/coverage/
+index.html
+/.vscode/
+/static/
+*.zip
+/test/
+/cypress/
