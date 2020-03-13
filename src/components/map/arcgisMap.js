@@ -1,45 +1,45 @@
-import esriLoader from 'esri-loader';
-import { GetLayers } from './getCustomMap';
+import esriLoader from "esri-loader";
+import { GetLayers } from "./getCustomMap";
 // import { ServiceUrl } from '../ServiceUrl';
-import SomeMethods from './tools';
+import SomeMethods from "./tools";
 
 const gisModules = [
-  'esri/Map',
-  'esri/views/MapView',
-  'esri/views/SceneView',
-  'esri/Basemap',
-  'esri/geometry/SpatialReference',
-  'esri/geometry/Point',
-  'esri/geometry/Polyline',
-  'esri/geometry/Polygon',
-  'esri/geometry/geometryEngine',
-  'esri/geometry/Extent',
-  'esri/geometry/support/webMercatorUtils',
-  'esri/Graphic',
-  'esri/symbols/PictureMarkerSymbol',
-  'esri/symbols/SimpleMarkerSymbol',
-  'esri/symbols/SimpleLineSymbol',
-  'esri/symbols/SimpleFillSymbol',
-  'esri/symbols/TextSymbol',
-  'esri/layers/GraphicsLayer',
-  'esri/layers/MapImageLayer',
-  'esri/layers/TileLayer',
-  'esri/layers/FeatureLayer',
-  'esri/layers/BaseTileLayer',
-  'esri/layers/WebTileLayer',
-  'esri/layers/support/TileInfo',
-  'esri/tasks/QueryTask',
-  'esri/tasks/support/Query',
-  'esri/widgets/Sketch/SketchViewModel',
-  'esri/widgets/Sketch',
-  'esri/widgets/ScaleBar',
-  'dojo/dom',
-  'dojo/on',
-  'dojo/dom-construct',
-  'dojo/query',
-  'customMap/BDLayer',
-  'customMap/CustomBaseMap',
-  'dojo/domReady!'
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/views/SceneView",
+  "esri/Basemap",
+  "esri/geometry/SpatialReference",
+  "esri/geometry/Point",
+  "esri/geometry/Polyline",
+  "esri/geometry/Polygon",
+  "esri/geometry/geometryEngine",
+  "esri/geometry/Extent",
+  "esri/geometry/support/webMercatorUtils",
+  "esri/Graphic",
+  "esri/symbols/PictureMarkerSymbol",
+  "esri/symbols/SimpleMarkerSymbol",
+  "esri/symbols/SimpleLineSymbol",
+  "esri/symbols/SimpleFillSymbol",
+  "esri/symbols/TextSymbol",
+  "esri/layers/GraphicsLayer",
+  "esri/layers/MapImageLayer",
+  "esri/layers/TileLayer",
+  "esri/layers/FeatureLayer",
+  "esri/layers/BaseTileLayer",
+  "esri/layers/WebTileLayer",
+  "esri/layers/support/TileInfo",
+  "esri/tasks/QueryTask",
+  "esri/tasks/support/Query",
+  "esri/widgets/Sketch/SketchViewModel",
+  "esri/widgets/Sketch",
+  "esri/widgets/ScaleBar",
+  "dojo/dom",
+  "dojo/on",
+  "dojo/dom-construct",
+  "dojo/query",
+  "customMap/BDLayer",
+  "customMap/CustomBaseMap",
+  "dojo/domReady!"
 ];
 
 /**
@@ -107,25 +107,29 @@ class ArcGISMap {
   loadAPI() {
     // let packagePath = '/';
     return new Promise((resolve, reject) => {
-      esriLoader.loadModules(this.options.gisModules, {
-        // url: ServiceUrl.apiUrl,
-        url: 'https://192.168.1.47:8083//init.js',
-        dojoConfig: {
-          async: true,
-          tlmSiblingOfDojo: false,
-          packages: [{
-            name: 'customMap',
-            // location: location.pathname.replace(/\/[^/]+$/, '') + '/customMap'
-            location: '/static/customMap'
-          }]
-        }
-      }).then((args) => {
-        for (let k in args) {
-          let name = this.options.gisModules[k].split('/').pop();
-          this.gisAPI[name] = args[k];
-        }
-        resolve();
-      });
+      esriLoader
+        .loadModules(this.options.gisModules, {
+          // url: ServiceUrl.apiUrl,
+          url: "https://192.168.1.76:8083//init.js",
+          dojoConfig: {
+            async: true,
+            tlmSiblingOfDojo: false,
+            packages: [
+              {
+                name: "customMap",
+                // location: location.pathname.replace(/\/[^/]+$/, '') + '/customMap'
+                location: "/static/customMap"
+              }
+            ]
+          }
+        })
+        .then(args => {
+          for (const k in args) {
+            const name = this.options.gisModules[k].split("/").pop();
+            this.gisAPI[name] = args[k];
+          }
+          resolve();
+        });
     });
   }
 
@@ -142,18 +146,18 @@ class ArcGISMap {
       })
     });
 
-    let initialViewParams = {
+    const initialViewParams = {
       map: this.map,
       zoom: this.options.zoom ? this.options.zoom : 12,
       center: this.options.center ? this.options.center : [120.06, 30.2],
       container: this.viewConfig.container
     };
 
-    this.viewConfig.mapView = this.createView(initialViewParams, '2d');
+    this.viewConfig.mapView = this.createView(initialViewParams, "2d");
     this.viewConfig.activeView = this.viewConfig.mapView;
     this.mapview = this.viewConfig.activeView;
     initialViewParams.container = null;
-    this.viewConfig.sceneView = this.createView(initialViewParams, '3d');
+    this.viewConfig.sceneView = this.createView(initialViewParams, "3d");
 
     // 不切换视图的时候声明用
     // this.mapview = new this.gisAPI.MapView({
@@ -165,22 +169,22 @@ class ArcGISMap {
 
     // 添加工具栏
     if (this.options.sketch) {
-      let graphicsLayer = new this.gisAPI.GraphicsLayer();
+      const graphicsLayer = new this.gisAPI.GraphicsLayer();
       const sketch = new this.gisAPI.Sketch({
         view: this.mapview,
         layer: graphicsLayer
       });
-      this.mapview.ui.add(sketch, 'top-right');
+      this.mapview.ui.add(sketch, "top-right");
       this.map.add(graphicsLayer);
     }
 
     // 添加比例尺
-    let scaleBar = new this.gisAPI.ScaleBar({
+    const scaleBar = new this.gisAPI.ScaleBar({
       view: this.mapview,
-      unit: 'metric'
+      unit: "metric"
     });
     this.mapview.ui.add(scaleBar, {
-      position: 'bottom-left'
+      position: "bottom-left"
     });
   }
 
@@ -191,7 +195,7 @@ class ArcGISMap {
    */
   createView(params, type) {
     let view;
-    let is2D = type === '2d';
+    const is2D = type === "2d";
     if (is2D) {
       view = new this.gisAPI.MapView(params);
       return view;
@@ -205,7 +209,7 @@ class ArcGISMap {
    * 2D-3D切换
    */
   switchView() {
-    let is3D = this.viewConfig.activeView.type === '3d';
+    const is3D = this.viewConfig.activeView.type === "3d";
     if (is3D) {
       this.viewConfig.mapView.viewpoint = this.viewConfig.activeView.viewpoint.clone();
       this.viewConfig.mapView.container = this.viewConfig.container;
@@ -228,7 +232,7 @@ class ArcGISMap {
    * @param {array} layerInfos
    */
   createTileLayer(layerInfos) {
-    let tileLayer = layerInfos.map(item => {
+    const tileLayer = layerInfos.map(item => {
       return new this.gisAPI.TileLayer({
         id: item.id,
         url: item.url
@@ -247,29 +251,34 @@ class ArcGISMap {
         baseLayers: layer
       });
     }
-    if (typeof (layer) === 'string') {
-      if (layer === 'BDMap') {
+    if (typeof layer === "string") {
+      if (layer === "BDMap") {
         this.map.basemap = new this.gisAPI.Basemap({
           baseLayers: this.customBaseLayer.LAYER_BD
         });
-      } else if (layer === 'GDMap') {
+      } else if (layer === "GDMap") {
         this.map.basemap = new this.gisAPI.Basemap({
           baseLayers: this.customBaseLayer.LAYER_GD
         });
-      } else if (layer === 'GDSATMap') {
+      } else if (layer === "GDSATMap") {
         this.map.basemap = new this.gisAPI.Basemap({
-          baseLayers: [this.customBaseLayer.LAYER_GDSAT,
-            this.customBaseLayer.LAYER_GD_ANNO]
+          baseLayers: [
+            this.customBaseLayer.LAYER_GDSAT,
+            this.customBaseLayer.LAYER_GD_ANNO
+          ]
         });
-      } else if (layer === 'TDTMap') {
+      } else if (layer === "TDTMap") {
         this.map.basemap = new this.gisAPI.Basemap({
-          baseLayers: [this.customBaseLayer.LAYER_TDTVEC, this.customBaseLayer.LAYER_TDTVEC_ANNO]
+          baseLayers: [
+            this.customBaseLayer.LAYER_TDTVEC,
+            this.customBaseLayer.LAYER_TDTVEC_ANNO
+          ]
         });
-      } else if (layer === 'GoogleMap') {
+      } else if (layer === "GoogleMap") {
         this.map.basemap = new this.gisAPI.Basemap({
           baseLayers: [this.customBaseLayer.LAYER_GOOGLE]
         });
-      } else if (layer === 'GoogleSatMap') {
+      } else if (layer === "GoogleSatMap") {
         this.map.basemap = new this.gisAPI.Basemap({
           baseLayers: [this.customBaseLayer.LAYER_GOOGLESAT]
         });
@@ -294,11 +303,7 @@ class ArcGISMap {
    * @param {Class} attributes 属性信息
    */
   addSymbol(symbol, geometry, attributes) {
-    let graphic = new this.$gisAPI.Graphic(
-      geometry,
-      symbol,
-      attributes
-    );
+    const graphic = new this.$gisAPI.Graphic(geometry, symbol, attributes);
 
     this.graphics.push(graphic);
   }
@@ -331,7 +336,7 @@ class ArcGISMap {
       layer = this.graphicsLayers[type];
       // this.tools.clearGraLayer(layer);
     } else {
-      layer = this.tools.creatGraLayer({ layerName: type + 'Layer' });
+      layer = this.tools.creatGraLayer({ layerName: type + "Layer" });
       this.graphicsLayers[type] = layer;
     }
     this.tools.drawGra({ type: type, layer: layer });
