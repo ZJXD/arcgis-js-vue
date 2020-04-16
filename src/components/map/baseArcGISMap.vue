@@ -3,17 +3,17 @@
     <div class="mapSource">
       地图源：
       <!-- <button class="baseMap" v-for="baseMap in baseMaps" :key="baseMap" @click="changeBaseMap(baseMap)">{{baseMap}}</button> -->
-      <el-select v-model="selectValue" placeholder='请选择' @change="changeBaseMap(selectValue)">
-        <el-option v-for="item in selectOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+      <el-select v-model="selectValue" placeholder="请选择" @change="changeBaseMap(selectValue)">
+        <el-option v-for="item in selectOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </div>
     <div ref="baseMap" :id="mapid" class="map">
-      <button class="switchViewBtn" @click="switchView" title="点击切换视图">{{viewValue}}</button>
+      <button class="switchViewBtn" title="点击切换视图" @click="switchView">{{ viewValue }}</button>
       <div class="swithcShowDiv">
-        <button :class="this.swithcShowClass" @click="switchShow" title="隐藏显示工具栏"></button>
+        <button :class="swithcShowClass" title="隐藏显示工具栏" @click="switchShow" />
       </div>
-      <div class="toolBox" v-show="this.toolBoxShow">
-        <button :key="item.id" v-for="item in toolButton" :class="[item.name , {selected:isChange === item.id}]" :title="item.title" @click="toolClick(item.id)"></button>
+      <div v-show="toolBoxShow" class="toolBox">
+        <button v-for="item in toolButton" :key="item.id" :class="[item.name , {selected:isChange === item.id}]" :title="item.title" @click="toolClick(item.id)" />
       </div>
     </div>
   </div>
@@ -141,15 +141,15 @@ export default {
       viewValue: '3D'
     };
   },
-  created: function () {
+  created() {
     this.mapid = 'map_' + Math.random().toString(36).substr(2, 9);
   },
-  mounted: function () {
+  mounted() {
     this.inintMap();
   },
   methods: {
     inintMap() {
-      let options = {
+      const options = {
         gisModules: gisModules
       };
       this.gisMap = new ArcGISMap(this.mapid, options);
@@ -250,13 +250,13 @@ export default {
     .show {
       &::before {
         font-size: 22px;
-        content: "\00AB";
+        content: '\00AB';
       }
     }
     .hide {
       &::before {
         font-size: 22px;
-        content: "\00BB";
+        content: '\00BB';
       }
     }
     :hover {
@@ -303,37 +303,37 @@ export default {
     .tooladd {
       &::before {
         font-size: 22px;
-        content: "\00BB";
+        content: '\00BB';
       }
     }
     .toolpolyline {
       &::before {
         font-size: 22px;
-        content: "\21AD";
+        content: '\21AD';
       }
     }
     .toolpoint {
       &::before {
         font-size: 22px;
-        content: "\2722";
+        content: '\2722';
       }
     }
     .toolpolygon {
       &::before {
         font-size: 22px;
-        content: "\2610";
+        content: '\2610';
       }
     }
     .toolrectangle {
       &::before {
         font-size: 22px;
-        content: "\25A3";
+        content: '\25A3';
       }
     }
     .toolcircle {
       &::before {
         font-size: 22px;
-        content: "\2764";
+        content: '\2764';
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h2 id="title">{{msg}}</h2>
+    <h2 id="title">{{ msg }}</h2>
     <router-view />
   </div>
 </template>
@@ -12,6 +12,10 @@ import esriLoader from 'esri-loader';
 import { ServiceUrl } from './components/ServiceUrl';
 
 export default {
+  name: 'App',
+  components: {
+    Nav
+  },
   data() {
     return {
       msg: 'MyMaps By Arcgis for JavaScript 4.10',
@@ -21,10 +25,6 @@ export default {
         { route: '/featureLayer', name: '要素图层' }
       ]
     };
-  },
-  name: 'App',
-  components: {
-    Nav
   },
   created() {
     // // 加载js

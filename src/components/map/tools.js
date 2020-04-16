@@ -1,7 +1,7 @@
 /**
  * 添加删除等各类方法的工具集
  */
-import trans from './transCoords.js';
+import trans from "./transCoords.js";
 
 const EARTH_RADIUS = 6378137; // 赤道半径
 
@@ -10,28 +10,28 @@ class SomeMethods {
     this.mapview = mapview || null;
     this.$GisApi = $GisApi || null;
     this.pointSymbol = {
-      type: 'simple-marker',
-      style: 'circle',
-      color: '#8A2BE2',
-      size: '10px',
+      type: "simple-marker",
+      style: "circle",
+      color: "#8A2BE2",
+      size: "10px",
       outline: {
         color: [255, 255, 255],
         width: 2
       }
     };
     this.polylineSymbol = {
-      type: 'simple-line',
-      color: '#8A2BE2',
-      width: '2',
-      style: 'dash'
+      type: "simple-line",
+      color: "#8A2BE2",
+      width: "2",
+      style: "dash"
     };
 
     this.polygonSymbol = {
-      type: 'simple-fill',
-      color: 'rgba(138,43,226, 0.8)',
+      type: "simple-fill",
+      color: "rgba(138,43,226, 0.8)",
       outline: {
-        color: 'white',
-        style: 'solid',
+        color: "white",
+        style: "solid",
         width: 1
       }
     };
@@ -54,17 +54,17 @@ class SomeMethods {
     let pointSymbol = {};
     if (config.isPic) {
       pointSymbol = {
-        type: 'picture-marker',
+        type: "picture-marker",
         url: config.url,
-        width: config.width || '8px',
-        height: config.height || '8px'
+        width: config.width || "8px",
+        height: config.height || "8px"
       };
     } else {
       pointSymbol = {
-        type: 'simple-marker',
-        style: 'circle',
-        color: config.pointColor || '#8A2BE2',
-        size: config.pointSize || '10px',
+        type: "simple-marker",
+        style: "circle",
+        color: config.pointColor || "#8A2BE2",
+        size: config.pointSize || "10px",
         outline: {
           color: [255, 255, 255],
           width: 2
@@ -82,8 +82,8 @@ class SomeMethods {
    */
   creatGraLayer(data) {
     const graLayer = new this.$GisApi.GraphicsLayer({
-      id: data.id || 'graLayer_' + Math.ceil(Math.random() * 9999),
-      layerName: data.layerName || ''
+      id: data.id || "graLayer_" + Math.ceil(Math.random() * 9999),
+      layerName: data.layerName || ""
     });
     this.mapview && this.mapview.map && this.mapview.map.add(graLayer);
     return graLayer;
@@ -102,29 +102,29 @@ class SomeMethods {
   addGraByPoints(config) {
     let geo = {};
     switch (config.type) {
-      case 'point':
+      case "point":
         geo = {
-          type: 'point',
+          type: "point",
           longitude: config.coords[0],
           latitude: config.coords[1]
         };
         break;
-      case 'polyline':
+      case "polyline":
         geo = {
-          type: 'polyline',
+          type: "polyline",
           paths: config.coords
         };
         break;
-      case 'polygon':
+      case "polygon":
         geo = {
-          type: 'polygon',
+          type: "polygon",
           rings: config.coords
         };
         break;
     }
     const graphic = new this.$GisApi.Graphic({
       geometry: geo,
-      symbol: config.symbol || this[config.type + 'Symbol'],
+      symbol: config.symbol || this[config.type + "Symbol"],
       attributes: config.attrs || {}
     });
 
@@ -146,20 +146,31 @@ class SomeMethods {
     const sketchViewModel = new this.$GisApi.SketchViewModel({
       view: this.mapview,
       layer: config.layer,
-      pointSymbol: config.symbol && config.symbol.pointSymbol ? config.symbol.pointSymbol : this.pointSymbol,
-      polylineSymbol: config.symbol && config.symbol.polylineSymbol ? config.symbol.polylineSymbol : this.polylineSymbol,
-      polygonSymbol: config.symbol && config.symbol.polygonSymbol ? config.symbol.polygonSymbol : this.polygonSymbol
+      pointSymbol:
+        config.symbol && config.symbol.pointSymbol
+          ? config.symbol.pointSymbol
+          : this.pointSymbol,
+      polylineSymbol:
+        config.symbol && config.symbol.polylineSymbol
+          ? config.symbol.polylineSymbol
+          : this.polylineSymbol,
+      polygonSymbol:
+        config.symbol && config.symbol.polygonSymbol
+          ? config.symbol.polygonSymbol
+          : this.polygonSymbol
     });
     sketchViewModel.create(config.type, {
-      mode: 'click'
+      mode: "click"
     });
-    sketchViewModel.on('draw-complete', evt => {
+    sketchViewModel.on("draw-complete", evt => {
       config.clearLayer && config.layer.removeAll();
       const geo = evt.geometry.spatialReference.isWebMercator
         ? this.$GisApi.webMercatorUtils.webMercatorToGeographic(evt.geometry)
         : evt.geometry;
-      let symbol = this[config.type + 'Symbol'];
-      if (config.symbol && config.symbol[config.type + 'Symbol']) symbol = config.symbol[config.type + 'Symbol'];
+      let symbol = this[config.type + "Symbol"];
+      if (config.symbol && config.symbol[config.type + "Symbol"]) {
+        symbol = config.symbol[config.type + "Symbol"];
+      }
       const graphic = new this.$GisApi.Graphic({
         geometry: geo,
         symbol: symbol
@@ -169,10 +180,11 @@ class SomeMethods {
       if (geo.rings) coords = geo.rings[0];
       if (geo.paths) coords = geo.paths[0];
       if (geo.longitude && geo.latitude) coords = [geo.longitude, geo.latitude];
-      config.drawEnd && config.drawEnd({
-        coords: coords,
-        graphic: graphic
-      });
+      config.drawEnd &&
+        config.drawEnd({
+          coords: coords,
+          graphic: graphic
+        });
     });
   }
 
@@ -192,7 +204,7 @@ class SomeMethods {
    */
   async removeOneGra(layer, fieldName, fieldValue) {
     const graphic = await layer.graphics.find(gra => {
-      if (gra.attributes['checked']) {
+      if (gra.attributes["checked"]) {
         return true;
       } else {
         return gra.attributes[fieldName] === fieldValue;
@@ -224,7 +236,7 @@ class SomeMethods {
    */
   highlightSelect(graphic, symbol) {
     if (this.mapview.graphics.length > 0) this.mapview.graphics.removeAll();
-    let currentSelected = graphic.clone();
+    const currentSelected = graphic.clone();
     currentSelected.symbol = symbol;
     this.mapview.graphics.add(currentSelected);
   }
@@ -249,53 +261,58 @@ class SomeMethods {
   creatFclRender(type, breakObj) {
     const breakSymbol = [];
     const defaultSet = [
-      [
-        [255, 0, 0, 1],
-        [],
-        6
-      ],
-      [
-        [255, 204, 102, 0.8],
-        [221, 159, 34, 0.8],
-        22
-      ],
-      [
-        [102, 204, 255, 0.8],
-        [82, 163, 204, 0.8],
-        24
-      ],
-      [
-        [51, 204, 51, 0.8],
-        [41, 163, 41, 0.8],
-        28
-      ],
-      [
-        [250, 65, 74, 0.8],
-        [200, 52, 59, 0.8],
-        32
-      ]
+      [[255, 0, 0, 1], [], 6],
+      [[255, 204, 102, 0.8], [221, 159, 34, 0.8], 22],
+      [[102, 204, 255, 0.8], [82, 163, 204, 0.8], 24],
+      [[51, 204, 51, 0.8], [41, 163, 41, 0.8], 28],
+      [[250, 65, 74, 0.8], [200, 52, 59, 0.8], 32]
     ];
     breakObj.map((obj, index) => {
       breakSymbol.push({
         type: type,
-        style: type === 'simple-marker' ? 'circle' : 'solid',
+        style: type === "simple-marker" ? "circle" : "solid",
         color: obj.fillColor || defaultSet[index][0],
         size: obj.iconSize || defaultSet[index][2],
-        outline: index === 0 ? null : {
-          color: obj.outlineColor || defaultSet[index][1]
-        }
+        outline:
+          index === 0
+            ? null
+            : { color: obj.outlineColor || defaultSet[index][1] }
       });
     });
 
     const renderer = new this.$GisApi.ClassBreaksRenderer({
       defaultSymbol: breakObj[0].icon || breakSymbol[0]
     });
-    renderer.field = 'clusterCount';
+    renderer.field = "clusterCount";
 
-    renderer.addClassBreakInfo(breakObj[0].number || breakObj[0], breakObj[1].number || breakObj[1], type === 'simple-marker' && breakObj[1].icon ? breakObj[1].icon : breakSymbol[1]);
-    renderer.addClassBreakInfo((breakObj[1].number || breakObj[1]) + 1, breakObj[2].number || breakObj[2], type === 'simple-marker' && breakObj[2].icon ? breakObj[2].icon : breakSymbol[2]);
-    renderer.addClassBreakInfo((breakObj[2].number || breakObj[2]) + 1, breakObj[3].number || breakObj[3], type === 'simple-marker' && breakObj[3].icon ? breakObj[3].icon : breakSymbol[3]);
-    renderer.addClassBreakInfo((breakObj[3].number || breakObj[3]) + 1, breakObj[4].number || breakObj[4], type === 'simple-marker' && breakObj[4].icon ? breakObj[4].icon : breakSymbol[4]);
+    renderer.addClassBreakInfo(
+      breakObj[0].number || breakObj[0],
+      breakObj[1].number || breakObj[1],
+      type === "simple-marker" && breakObj[1].icon
+        ? breakObj[1].icon
+        : breakSymbol[1]
+    );
+    renderer.addClassBreakInfo(
+      (breakObj[1].number || breakObj[1]) + 1,
+      breakObj[2].number || breakObj[2],
+      type === "simple-marker" && breakObj[2].icon
+        ? breakObj[2].icon
+        : breakSymbol[2]
+    );
+    renderer.addClassBreakInfo(
+      (breakObj[2].number || breakObj[2]) + 1,
+      breakObj[3].number || breakObj[3],
+      type === "simple-marker" && breakObj[3].icon
+        ? breakObj[3].icon
+        : breakSymbol[3]
+    );
+    renderer.addClassBreakInfo(
+      (breakObj[3].number || breakObj[3]) + 1,
+      breakObj[4].number || breakObj[4],
+      type === "simple-marker" && breakObj[4].icon
+        ? breakObj[4].icon
+        : breakSymbol[4]
+    );
 
     return renderer;
   }
@@ -370,10 +387,10 @@ class SomeMethods {
    * @return FlareClusterLayer [Object] 聚合图层
    */
   createFclLayer(breakNumOpts, opts) {
-    const renderer = this.creatFclRender('simple-marker', breakNumOpts);
-    const areaRenderer = this.creatFclRender('simple-fill', breakNumOpts);
-    const flareRenderer = this.creatFclRender('simple-marker', breakNumOpts);
-    let options = {
+    const renderer = this.creatFclRender("simple-marker", breakNumOpts);
+    const areaRenderer = this.creatFclRender("simple-fill", breakNumOpts);
+    const flareRenderer = this.creatFclRender("simple-marker", breakNumOpts);
+    const options = {
       clusterRenderer: renderer,
       areaRenderer: areaRenderer,
       flareRenderer: flareRenderer
@@ -392,7 +409,9 @@ class SomeMethods {
     geoJson.features.map((feature, i) => {
       if (i === geoJson.features.length - 1) {
         const fullExtent = this.mapview.map.allLayers.toArray()[0].fullExtent;
-        const fullExtentGeo = this.$GisApi.webMercatorUtils.webMercatorToGeographic(fullExtent);
+        const fullExtentGeo = this.$GisApi.webMercatorUtils.webMercatorToGeographic(
+          fullExtent
+        );
         const fullExtentCoords = [
           [
             [fullExtentGeo.xmin, fullExtentGeo.ymin],
@@ -404,13 +423,16 @@ class SomeMethods {
         fullExtentCoords.push(feature.geometry.coordinates[0]);
         graphics.push({
           geometry: {
-            type: 'polygon',
+            type: "polygon",
             rings: fullExtentCoords
           },
           attributes: feature.properties,
           symbol: {
-            type: 'simple-fill',
-            color: opts.stick && opts.stick.backgroundColor ? opts.stick.backgroundColor : 'rgba(0,0,0,0)',
+            type: "simple-fill",
+            color:
+              opts.stick && opts.stick.backgroundColor
+                ? opts.stick.backgroundColor
+                : "rgba(0,0,0,0)",
             outline: {
               color: opts.outlineColor,
               width: 1
@@ -425,11 +447,14 @@ class SomeMethods {
           geometry: polygonGeo,
           attributes: feature.properties,
           symbol: {
-            type: 'simple-fill',
-            color: opts.stick && opts.stick.highlightColor ? opts.stick.highlightColor : 'rgba(0,0,0,0)',
+            type: "simple-fill",
+            color:
+              opts.stick && opts.stick.highlightColor
+                ? opts.stick.highlightColor
+                : "rgba(0,0,0,0)",
             outline: {
               color: opts.outlineColor,
-              style: 'dash-dot',
+              style: "dash-dot",
               width: 1
             }
           }
@@ -470,7 +495,7 @@ class SomeMethods {
     const featureAttr = newGra.attributes;
     let graphic = null;
     switch (editType) {
-      case 'add':
+      case "add":
         graphic = new this.$GisApi.Graphic({
           geometry: newGra.geometry,
           attributes: featureAttr
@@ -479,12 +504,12 @@ class SomeMethods {
           addFeatures: [graphic]
         });
         break;
-      case 'delete':
+      case "delete":
         feaLayer.applyEdits({
           deleteFeatures: [featureAttr]
         });
         break;
-      case 'update':
+      case "update":
         graphic = new this.$GisApi.Graphic({
           geometry: newGra.geometry,
           attributes: featureAttr
@@ -508,13 +533,20 @@ class SomeMethods {
     if (startLon || startLon || endLon || endLat) {
       return null;
     }
-    let radStartLat = this.rad(startLat);
-    let radEndLat = this.rad(endLat);
-    let a = radStartLat - radEndLat;
-    let b = this.rad(startLon) - this.rad(endLon);
-    let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
-      Math.cos(radStartLat) * Math.cos(radEndLat) *
-      Math.pow(Math.sin(b / 2), 2)));
+    const radStartLat = this.rad(startLat);
+    const radEndLat = this.rad(endLat);
+    const a = radStartLat - radEndLat;
+    const b = this.rad(startLon) - this.rad(endLon);
+    let s =
+      2 *
+      Math.asin(
+        Math.sqrt(
+          Math.pow(Math.sin(a / 2), 2) +
+            Math.cos(radStartLat) *
+              Math.cos(radEndLat) *
+              Math.pow(Math.sin(b / 2), 2)
+        )
+      );
     s = s * EARTH_RADIUS;
     return s;
   }
@@ -524,7 +556,7 @@ class SomeMethods {
    * @param {*} degree
    */
   rad(degree) {
-    return degree * Math.PI / 180;
+    return (degree * Math.PI) / 180;
   }
 }
 export default SomeMethods;
