@@ -15,6 +15,10 @@
       <div v-show="toolBoxShow" class="toolBox">
         <button v-for="item in toolButton" :key="item.id" :class="[item.name , {selected:isChange === item.id}]" :title="item.title" @click="toolClick(item.id)" />
       </div>
+      <div class="distance">
+        <button>测量</button>
+        <button>清除</button>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +41,7 @@ const gisModules = [
   'esri/widgets/Sketch',
   'esri/widgets/Sketch/SketchViewModel',
   'esri/widgets/ScaleBar',
+  "esri/widgets/Measurement",
   'esri/geometry/Extent',
   'dojo/dom',
   'dojo/on',
@@ -335,6 +340,29 @@ export default {
         font-size: 22px;
         content: '\2764';
       }
+    }
+  }
+
+  .distance {
+    display: flex;
+    position: absolute;
+    right: 15px;
+    top: 120px;
+    background: white;
+    padding: 6px 7px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    button {
+      align-items: center;
+      background-color: transparent;
+      color: #6e6e6e;
+      font-size: 14px;
+      transition: background-color 125ms ease-in-out;
+      border: 1px solid #333;
+      border-radius: 5px;
+      padding: 5px 15px;
+      margin: 5px;
+      // outline: none;
+      cursor: pointer;
     }
   }
 }

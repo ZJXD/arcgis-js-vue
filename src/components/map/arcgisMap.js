@@ -33,6 +33,7 @@ const gisModules = [
   "esri/widgets/Sketch/SketchViewModel",
   "esri/widgets/Sketch",
   "esri/widgets/ScaleBar",
+  "esri/widgets/Measurement",
   "dojo/dom",
   "dojo/on",
   "dojo/dom-construct",
@@ -110,7 +111,7 @@ class ArcGISMap {
       esriLoader
         .loadModules(this.options.gisModules, {
           // url: ServiceUrl.apiUrl,
-          url: "https://192.168.1.76:8083//init.js",
+          url: "https://192.168.1.216:8083//init.js",
           dojoConfig: {
             async: true,
             tlmSiblingOfDojo: false,
@@ -177,6 +178,14 @@ class ArcGISMap {
       this.mapview.ui.add(sketch, "top-right");
       this.map.add(graphicsLayer);
     }
+
+    // 添加测距
+    const measurement = new this.gisAPI.Measurement({
+      view: this.mapview,
+      activeTool: 'distance',
+      linearUnit: "metric"
+    })
+    this.mapview.ui.add(measurement, 'bottom-right')
 
     // 添加比例尺
     const scaleBar = new this.gisAPI.ScaleBar({
