@@ -1,6 +1,6 @@
 import esriLoader from "esri-loader";
 import { GetLayers } from "./getCustomMap";
-// import { ServiceUrl } from '../ServiceUrl';
+import { ServiceUrl } from '../ServiceUrl';
 import SomeMethods from "./tools";
 
 const gisModules = [
@@ -110,8 +110,8 @@ class ArcGISMap {
     return new Promise((resolve, reject) => {
       esriLoader
         .loadModules(this.options.gisModules, {
-          // url: ServiceUrl.apiUrl,
-          url: "https://192.168.1.216:8083//init.js",
+          url: ServiceUrl.apiUrl,
+          // url: "https://192.168.1.216:8083/init.js",
           dojoConfig: {
             async: true,
             tlmSiblingOfDojo: false,

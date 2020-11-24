@@ -24,8 +24,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'esri/layers/BaseTileLayer', 'e
         var url = this.getTileUrl(level, row, col);
         return esriRequest(url, {
           responseType: 'image'
-        })
-          .then(function (response) {
+        }).then(function (response) {
             var image = response.data;
             var width = this.tileInfo.size[0];
             var height = this.tileInfo.size[0];
